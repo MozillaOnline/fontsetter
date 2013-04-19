@@ -1,0 +1,11 @@
+content  fontsetter    content/
+skin  fontsetter classic/1.0 skin/
+overlay  chrome://browser/content/browser.xul  chrome://fontsetter/content/fontsetter.xul
+locale fontsetter zh-TW locale/zh-TW/
+locale fontsetter zh-CN locale/zh-CN/
+locale fontsetter en-US locale/en-US/
+
+style   chrome://global/content/customizeToolbar.xul chrome://fontsetter/skin/fontsetter.css
+
+override  chrome://fontsetter/skin/images/A.png         chrome://fontsetter/skin/images/A-mac.png               os=Darwin
+

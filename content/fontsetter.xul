@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+<?xml-stylesheet href="chrome://fontsetter/content/fontsetter-font.css" type="text/css"?>
+<?xml-stylesheet href="chrome://fontsetter/skin/fontsetter.css" type="text/css"?>
+<!DOCTYPE overlay SYSTEM "chrome://fontsetter/locale/fontsetter.dtd">
+<overlay id="fontsetter"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+    <toolbarpalette id="BrowserToolbarPalette">
+      <toolbarbutton id="tcfontsetter" label="&fontsetter.name;"
+                     tooltiptext="&fontsetter.name;"
+                     class="toolbarbutton-1 chromeclass-toolbar-additional"
+                     oncommand="MOA.FontSetter.popupMenu();"/>
+    </toolbarpalette>
+
+    <popupset id="mainPopupSet">
+      <menupopup id="fontsetter-selector-menu"/>
+    </popupset>
+
+  <script type="application/x-javascript" src="chrome://fontsetter/content/moa.js" ></script>
+  <script type="application/x-javascript" src="chrome://fontsetter/content/fontsetter.js" ></script>
+  <stringbundleset>
+    <stringbundle id="fontsetterStrings" src="chrome://fontsetter/locale/fontsetter.properties"/>
+  </stringbundleset>
+</overlay>
+
