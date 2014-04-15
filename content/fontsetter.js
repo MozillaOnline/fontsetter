@@ -23,7 +23,6 @@
 
   var ctypesClearTypeTuner = (function() {
     var _user32 = null;
-    var _kernel32 = null;
     var _spi = null;
     var _gle = null;
     var _const = {
@@ -47,19 +46,14 @@
                               jsm.ctypes.unsigned_int,
                               jsm.ctypes.voidptr_t,
                               jsm.ctypes.unsigned_int);
-      _kernel32 = jsm.ctypes.open("kernel32");
-      _gle = _kernel32.declare("GetLastError",
-      jsm.ctypes.winapi_abi,
-      jsm.ctypes.uint32_t)
     };
 
     var _close = function() {
       _user32.close();
-      _kernel32.close()
     };
 
     var _error = function(msg) {
-      Cu.reportError([msg, this._getLastError()].join(': '));
+      Cu.reportError([msg, (jsm.ctypes.winLastError || 0)].join(': '));
       _close();
       return false;
     };
@@ -390,8 +384,8 @@
   }
 
   function fontsetter_createMenuItem(fontName, index) {
-    var item = document.createElement("menuitem");
-    item.setAttribute("class", "menuitem-iconic");
+    var item = document.createElement("toolbarbutton");
+    item.setAttribute("class", "subviewbutton");
     item.setAttribute("id", "fontsetter-menuitem-"+index);
     item.setAttribute("label", fontName);
     item.setAttribute("type", "checkbox");
@@ -444,8 +438,48 @@
     }
   }
 
+  function fontsetter_createView() {
+    var id = "tcfontsetter";
+    var area = CustomizableUI.AREA_PANEL;
+
+    var widget = CustomizableUI.getWidget(id);
+    if (widget && widget.provider == CustomizableUI.PROVIDER_API) {
+      return;
+    }
+
+    var prefKey = "extensions.fontsetter@mozillaonline.com.lastUIChange";
+    if (Services.prefs.prefHasUserValue(prefKey)) {
+      var migrationListener = {
+        onWidgetAdded: function(aWidgetId, aArea) {
+          if (aWidgetId == id && aArea != CustomizableUI.AREA_ADDONBAR) {
+            CustomizableUI.removeListener(migrationListener);
+            Services.prefs.clearUserPref(prefKey);
+
+            var addonbar = document.getElementById(CustomizableUI.AREA_ADDONBAR);
+            if (addonbar && addonbar._currentSetMigrated.has(id)) {
+              CustomizableUI.addWidgetToArea(id, area);
+              addonbar._currentSetMigrated.delete(id);
+              addonbar._updateMigratedSet();
+            };
+          }
+        }
+      };
+
+      CustomizableUI.addListener(migrationListener);
+    }
+
+    CustomizableUI.createWidget(
+      { id : id,
+        type : "view",
+        viewId : "PanelUI-MOA-fontsetterView",
+        defaultArea : area,
+        label : strbundle.getString("fontsetter.name"),
+        tooltiptext : strbundle.getString("fontsetter.name")
+      });
+  }
+
   function fontsetter_rebuildMenu() {
-    var menupopup = document.getElementById("fontsetter-selector-menu");
+    var menupopup = document.getElementById("PanelUI-MOA-fontsetterView");
     if (menupopup == null) {
       LOG ("fontsetter: menu is not loaded yet");
       return;
@@ -456,15 +490,20 @@
       menupopup.removeChild(menupopup.firstChild);
     }
 
+    var header = document.createElement("label");
+    header.setAttribute("value", strbundle.getString("fontsetter.name"));
+    header.classList.add("panel-subview-header");
+    menupopup.appendChild(header);
+
     //add two button, 1. RestoreDefault 2.SetMenuFont 3.UseClearType
-    var restore = document.createElement("menuitem");
-    restore.setAttribute("class", "menuitem-iconic");
+    var restore = document.createElement("toolbarbutton");
+    restore.setAttribute("class", "subviewbutton");
     restore.setAttribute("label", strbundle.getString("fontsetter.restoreDefault"));
     restore.setAttribute("oncommand", "MOA.FontSetter.restoreDefault()");
     menupopup.appendChild(restore);
 
-    var setMenu = document.createElement("menuitem");
-    setMenu.setAttribute("class", "menuitem-iconic");
+    var setMenu = document.createElement("toolbarbutton");
+    setMenu.setAttribute("class", "subviewbutton");
     setMenu.setAttribute("label", strbundle.getString("fontsetter.applyToMenu"));
     setMenu.setAttribute("type", "checkbox");
     setMenu.setAttribute("checked", !fontSetter_getPref("use_default_menu_font", false));
@@ -474,8 +513,8 @@
 
     try {
       if (navigator.appVersion.indexOf("Win") != -1) {
-        var useClearType = document.createElement("menuitem");
-        useClearType.setAttribute("class", "menuitem-iconic");
+        var useClearType = document.createElement("toolbarbutton");
+        useClearType.setAttribute("class", "subviewbutton");
         useClearType.setAttribute("label", strbundle.getString("fontsetter.useClearType"));
         useClearType.setAttribute("type", "checkbox");
         useClearType.setAttribute("checked", ctypesClearTypeTuner.isClearTypeOn());
@@ -523,8 +562,8 @@
 
     // 显示所有字体选项
     if (mainFonts.length >0) {
-      var showAllFonts = document.createElement("menuitem");
-      showAllFonts.setAttribute("class", "menuitem-iconic");
+      var showAllFonts = document.createElement("toolbarbutton");
+      showAllFonts.setAttribute("class", "subviewbutton");
       showAllFonts.setAttribute("label", strbundle.getString("fontsetter.displayAllFonts"));
       showAllFonts.setAttribute("type", "checkbox");
       showAllFonts.setAttribute("checked", fontSetter_getPref("show_all_fonts", false));
@@ -555,58 +594,6 @@
     }
   }
 
-  function fontsetter_checkFirstRun() {
-    var lastUIChange = fontSetter_getPref("lastUIChange", "0.0");
-    if (lastUIChange >= "0.3") {
-      return;
-    }
-
-    fontSetter_setPref("use_default_menu_font", false);
-    var enumerator = Components.classes["@mozilla.org/gfx/fontenumerator;1"]
-               .getService(Components.interfaces.nsIFontEnumerator);
-    var localFontCount = { value: 0 };
-    var localFonts = enumerator.EnumerateAllFonts(localFontCount);
-    if (navigator.appVersion.indexOf("Win")!=-1) {
-      try {
-        if (fontSetter_getPref('restore_use_document_fonts', true)) {
-          var currentFont = fontSetter_getPref("currentfont", "");
-          fontsetter_resetPref("browser.display.use_document_fonts");
-          fontsetter_setFont(currentFont);
-        } else {
-          for (var i = 0; i < localFonts.length; ++i) {
-            if (localFonts[i] == fsDefaultFont) {
-              fontsetter_setFont(fsDefaultFont);
-              ctypesClearTypeTuner.setClearTypeOn();
-            }
-          }
-        }
-      } catch(e) {
-        LOG("fontsetter: check first run: set clear type exception: " + e.toString());
-        return;
-      }
-    }
-
-    var addonbar = window.document.getElementById("addon-bar");
-    let curSet = addonbar.currentSet;
-    if (-1 == curSet.indexOf("tcfontsetter")) {
-      let newSet = curSet + ",tcfontsetter";
-      addonbar.currentSet = newSet;
-      addonbar.setAttribute("currentset", newSet);
-      document.persist(addonbar.id, "currentset");
-      try {
-        BrowserToolboxCustomizeDone(true);
-      } catch(e) {}
-    }
-
-    if (addonbar.getAttribute("collapsed") == "true") {
-      addonbar.setAttribute("collapsed", "false");
-    }
-
-    document.persist(addonbar.id, "collapsed");
-    fontSetter_setPref("firstrun", false);
-    fontSetter_setPref("lastUIChange", "0.3");
-  }
-
   function fontsetter_restoreDefault() {
     fontSetter_setPref("currentfont", "");
     fontsetter_unsetFontForWebpage();
@@ -615,26 +602,15 @@
     fontsetter_rebuildMenu();
   }
 
-  function fontsetter_popupMenu() {
-    var popup = document.getElementById("fontsetter-selector-menu");
-    var panel;
-    if (document.getElementById("fontsetter-statusbar"))
-      panel = document.getElementById("fontsetter-statusbar");
-    else
-      panel = document.getElementById("tcfontsetter");
-    popup.openPopup(panel, "after_start", 0, -3);
-  }
-
   window.addEventListener("load", function(e) {
     window.setTimeout(function() {
       fontSetter_init();
-      fontsetter_checkFirstRun();
+      fontsetter_createView();
       fontsetter_rebuildMenu();
     }, 50);
   }, false);
 
   var ns = MOA.ns('FontSetter');
-  ns.popupMenu = fontsetter_popupMenu;
   ns.restoreDefault = fontsetter_restoreDefault;
   ns.switchClearType = fontsetter_switchClearType;
   ns.switchShowAllFonts = fontsetter_switchShowAllFonts;

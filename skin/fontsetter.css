@@ -1,15 +1,27 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-#tcfontsetter{
-  list-style-image: url("chrome://fontsetter/skin/images/A.png") !important;
+
+#PanelUI-MOA-fontsetterView {
+  width: 192px;
 }
 
-#tcfontsetter:-moz-lwtheme-brighttext {
-  list-style-image: url("chrome://fontsetter/skin/images/A-inverted.png") !important;
+#tcfontsetter {
+  list-style-image: url("chrome://fontsetter-os/skin/images/A.png") !important;
 }
-
-#TabsToolbar:last-child :-moz-any(#tcfontsetter) {
-  list-style-image: url("chrome://fontsetter/skin/images/A-inverted.png") !important;
+#tcfontsetter[cui-areatype="menu-panel"],
+toolbarpaletteitem[place="palette"] > #tcfontsetter {
+  list-style-image: url("chrome://fontsetter-os/skin/images/A-32.png") !important;
 }
-
+#tcfontsetter[cui-areatype="toolbar"]:not([overflowedItem=true]):-moz-lwtheme-brighttext {
+  list-style-image: url("chrome://fontsetter-os/skin/images/A-inverted.png") !important;
+}
+/* should be all osx, but limit to 10.7+ for simplicity */
+@media (-moz-mac-lion-theme) {
+  #tcfontsetter:hover:active:not([disabled="true"]):not([cui-areatype="menu-panel"]) {
+    list-style-image: url("chrome://fontsetter-os/skin/images/A-pressed.png") !important;
+  }
+  #tcfontsetter[cui-areatype="toolbar"]:hover:active:not([disabled="true"]):not([overflowedItem=true]):-moz-lwtheme-brighttext {
+    list-style-image: url("chrome://fontsetter-os/skin/images/A-inverted-pressed.png") !important;
+  }
+}
