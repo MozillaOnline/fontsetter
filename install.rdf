@@ -13,7 +13,7 @@
     <em:description>Choose your favorite fonts for menu and content.</em:description>
     <em:creator>Mozilla Online</em:creator>
     <em:homepageURL>http://www.firefox.com.cn/</em:homepageURL>
-    <em:iconURL>chrome://fontsetter/skin/images/icon32.png</em:iconURL>
+    <em:iconURL>chrome://fontsetter/skin/images/logo32.png</em:iconURL>
 
     <em:targetApplication>
       <Description>

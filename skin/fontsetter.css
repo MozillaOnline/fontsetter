@@ -7,21 +7,48 @@
 }
 
 #tcfontsetter {
-  list-style-image: url("chrome://fontsetter-os/skin/images/A.png") !important;
+  list-style-image: url("chrome://fontsetter-os/skin/images/icon16.png") !important;
 }
 #tcfontsetter[cui-areatype="menu-panel"],
 toolbarpaletteitem[place="palette"] > #tcfontsetter {
-  list-style-image: url("chrome://fontsetter-os/skin/images/A-32.png") !important;
+  list-style-image: url("chrome://fontsetter-os/skin/images/icon32.png") !important;
 }
 #tcfontsetter[cui-areatype="toolbar"]:not([overflowedItem=true]):-moz-lwtheme-brighttext {
-  list-style-image: url("chrome://fontsetter-os/skin/images/A-inverted.png") !important;
+  list-style-image: url("chrome://fontsetter-os/skin/images/icon16-inverted.png") !important;
 }
 /* should be all osx, but limit to 10.7+ for simplicity */
 @media (-moz-mac-lion-theme) {
   #tcfontsetter:hover:active:not([disabled="true"]):not([cui-areatype="menu-panel"]) {
-    list-style-image: url("chrome://fontsetter-os/skin/images/A-pressed.png") !important;
+    list-style-image: url("chrome://fontsetter-os/skin/images/icon16-active.png") !important;
   }
   #tcfontsetter[cui-areatype="toolbar"]:hover:active:not([disabled="true"]):not([overflowedItem=true]):-moz-lwtheme-brighttext {
-    list-style-image: url("chrome://fontsetter-os/skin/images/A-inverted-pressed.png") !important;
+    list-style-image: url("chrome://fontsetter-os/skin/images/icon16-inverted-active.png") !important;
   }
 }
+
+@media (-moz-mac-lion-theme) and (min-resolution: 2dppx) {
+  #tcfontsetter {
+    list-style-image: url("chrome://fontsetter-os/skin/images/icon16@2x.png") !important;
+  }
+  #tcfontsetter[cui-areatype="menu-panel"],
+  toolbarpaletteitem[place="palette"] > #tcfontsetter {
+    list-style-image: url("chrome://fontsetter-os/skin/images/icon32@2x.png") !important;
+  }
+  #tcfontsetter[cui-areatype="toolbar"]:not([overflowedItem=true]):-moz-lwtheme-brighttext {
+    list-style-image: url("chrome://fontsetter-os/skin/images/icon16-inverted@2x.png") !important;
+  }
+
+  #tcfontsetter:hover:active:not([disabled="true"]):not([cui-areatype="menu-panel"]) {
+    list-style-image: url("chrome://fontsetter-os/skin/images/icon16-active@2x.png") !important;
+  }
+  #tcfontsetter[cui-areatype="toolbar"]:hover:active:not([disabled="true"]):not([overflowedItem=true]):-moz-lwtheme-brighttext {
+    list-style-image: url("chrome://fontsetter-os/skin/images/icon16-inverted-active@2x.png") !important;
+  }
+
+  #tcfontsetter > .toolbarbutton-icon,
+  #tcfontsetter > .toolbarbutton-menubutton-button > .toolbarbutton-icon {
+    width: 16px;
+  }
+}
+
+
