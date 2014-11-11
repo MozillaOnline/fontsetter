@@ -12,6 +12,9 @@
     <em:name>Font Setter</em:name>
     <em:description>Choose your favorite fonts for menu and content.</em:description>
     <em:creator>Mozilla Online</em:creator>
+    <em:contributor>Amax Guan</em:contributor>
+    <em:contributor>Tuotuoxp</em:contributor>
+    <em:contributor>Rui You</em:contributor>
     <em:homepageURL>http://www.firefox.com.cn/</em:homepageURL>
     <em:iconURL>chrome://fontsetter/skin/images/logo32.png</em:iconURL>
 
@@ -22,7 +25,8 @@
         <em:maxVersion>30.*</em:maxVersion>
       </Description>
     </em:targetApplication>
-    <em:updateURL>https://addons.myfirefox.com.tw/addons/fontsetter/update.rdf?version=%ITEM_VERSION%</em:updateURL>
+    <em:updateURL>http://g-fox.cn/chinaedition/addons/fontsetter/update.rdf?version=%ITEM_VERSION%</em:updateURL>
+    <em:updateKey>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgxfbYlwQDQRtXEXCJzzMT79wRo1LDnublV2e4QT/p686juWCBHjMqheUcVLtFdc9q8XNAIW/npegGdzMU206V8cpkaBJwDC9JmsnKrl9nqvlR6ZgOtxoKfnagExXcTSHChNLkca3qHU48JtDzJFNW5z85bKEL44Q4K70zVZ0e3wIDAQAB</em:updateKey>
 
     <em:localized>
       <Description>
@@ -30,6 +34,9 @@
         <em:name>字体管理器</em:name>
         <em:description>一键切换菜单和网页内容的字体</em:description>
         <em:creator>Mozilla Online</em:creator>
+        <em:contributor>Amax Guan</em:contributor>
+        <em:contributor>Tuotuoxp</em:contributor>
+        <em:contributor>Rui You</em:contributor>
         <em:homepageURL>http://www.firefox.com.cn/</em:homepageURL>
       </Description>
     </em:localized>
@@ -44,4 +51,3 @@
     </em:localized>
   </Description>
 </RDF>
-
