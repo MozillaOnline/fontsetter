@@ -8,31 +8,11 @@
   const Cr = Components.results;
   const Cu = Components.utils;
 
-  function getLocale() {
-    try {
-      if (Services.prefs.getBoolPref(PREF_MATCH_OS_LOCALE)) {
-        return Services.locale.getLocaleComponentForUserAgent();
-      }
-    } catch (e) {}
-
-    try {
-      let locale = Services.prefs.getComplexValue(PREF_SELECTED_LOCALE,
-                                                  Ci.nsIPrefLocalizedString);
-      if (locale) {
-        return locale;
-      }
-    } catch (e) {}
-
-    try {
-      return Services.prefs.getCharPref(PREF_SELECTED_LOCALE);
-    } catch (e) {}
-
-    return 'en-US';
-  }
-
   var strbundle;
   var fsDefaultFont;
-  var fsLocale = getLocale();
+  var fsLocale = Cc["@mozilla.org/chrome/chrome-registry;1"]
+                   .getService(Ci.nsIXULChromeRegistry)
+                   .getSelectedLocale("fontsetter");
   var jsm = {};
   Cu.import("resource://gre/modules/ctypes.jsm", jsm);
   Cu.import("resource://gre/modules/Services.jsm", jsm);
