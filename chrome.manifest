@@ -3,6 +3,7 @@ content  fontsetter    content/
 skin  fontsetter classic/1.0 skin/
 skin  fontsetter-os classic/1.0 skin/
 skin  fontsetter-os classic/1.0 skin/mac/  os=Darwin
+skin  fontsetter-os classic/1.0 skin/mac/yosemite/  os=Darwin osversion>=10.10
 
 overlay  chrome://browser/content/browser.xul  chrome://fontsetter/content/fontsetter.xul
 
